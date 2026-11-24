@@ -1,0 +1,459 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ page_title }} | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #f7f4f5;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        .header {
+            background: #701c35;
+            color: white;
+            padding: 24px 30px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            font-size: 25px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #f3dce3;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #701c35;
+            font-size: 19px;
+            border-bottom: 2px solid #ead6dd;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-note {
+            color: #777;
+            font-size: 13px;
+            margin: -8px 0 18px;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d5c7cc;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #701c35;
+            box-shadow: 0 0 0 2px rgba(112,28,53,0.1);
+        }
+
+        .helptext {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .errorlist {
+            color: #b42318;
+            font-size: 13px;
+            padding-left: 18px;
+        }
+
+        .messages {
+            margin-bottom: 18px;
+        }
+
+        .message {
+            padding: 12px;
+            background: #fce8ed;
+            color: #701c35;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .error-box {
+            background: #fff0f0;
+            color: #b42318;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+        }
+
+        .info-box {
+            background: #fff7f8;
+            border-left: 4px solid #701c35;
+            padding: 14px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        button, .cancel-btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #701c35;
+            color: white;
+        }
+
+        button:hover {
+            background: #501326;
+        }
+
+        .cancel-btn {
+            background: #eee8eb;
+            color: #444;
+        }
+
+        @media(max-width: 650px) {
+            body {
+                padding: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-container {
+                padding: 18px;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>{{ page_title|default:"Applicant Form" }}</h1>
+        <p>PhD Admission Management System</p>
+    </div>
+
+    <div class="form-container">
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+        <div class="error-box">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- 1. PERSONAL INFORMATION -->
+
+            <div class="section">
+
+                <h2>1. Personal Information</h2>
+
+                <div class="form-grid">
+
+                    {% for field in form %}
+                        {% if field.name == "full_name" or field.name == "email" or field.name == "mobile_number" or field.name == "date_of_birth" %}
+
+                        <div class="field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+
+
+            <!-- 2. PROGRAMME DETAILS -->
+
+            <div class="section">
+
+                <h2>2. Programme Details</h2>
+
+                <div class="form-grid">
+
+                    {% for field in form %}
+                        {% if field.name == "department" or field.name == "programme" or field.name == "research_area" or field.name == "applied_phd_discipline" %}
+
+                        <div class="field {% if field.name == 'research_area' %}full{% endif %}">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+
+
+            <!-- 3. ACADEMIC QUALIFICATIONS -->
+
+            <div class="section">
+
+                <h2>3. Academic Qualifications</h2>
+
+                <div class="info-box">
+                    Enter the applicant's Postgraduate qualification
+                    details. The aggregate percentage will be used
+                    for PhD academic eligibility evaluation.
+                </div>
+
+                <div class="form-grid">
+
+                    {% for field in form %}
+                        {% if field.name == "highest_qualification" or field.name == "university_name" or field.name == "degree_name" or field.name == "specialization" or field.name == "aggregate_percentage" or field.name == "cgpa" or field.name == "qualifying_degree_duration" or field.name == "degree_award_date" %}
+
+                        <div class="field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+
+
+            <!-- 4. APPLICANT CATEGORY -->
+
+            <div class="section">
+
+                <h2>4. Applicant Category</h2>
+
+                <p class="section-note">
+                    Select the applicant's applicable admission category.
+                </p>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        {{ form.applicant_category.label_tag }}
+                        {{ form.applicant_category }}
+                        {{ form.applicant_category.errors }}
+                    </div>
+
+                </div>
+
+                <div class="info-box" style="margin-top:18px;">
+                    Academic eligibility percentage configured for
+                    this portal:
+                    <br>
+                    <strong>General:</strong> 60%
+                    <br>
+                    <strong>SC / ST / OBC / PwD:</strong> 55%
+                </div>
+
+            </div>
+
+
+            <!-- 5. UNIVERSITY RECOGNITION -->
+
+            <div class="section">
+
+                <h2>5. University Recognition</h2>
+
+                <p class="section-note">
+                    Confirm whether the applicant's Postgraduate
+                    university is recognised.
+                </p>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        {{ form.pg_university_recognized.label_tag }}
+                        {{ form.pg_university_recognized }}
+                        {{ form.pg_university_recognized.errors }}
+
+                        <span class="helptext">
+                            Select Yes, No or leave unverified
+                            until the recognition details are checked.
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- 6. ENTRANCE EXAMINATION -->
+
+            <div class="section">
+
+                <h2>6. Entrance Examination Details</h2>
+
+                <p class="section-note">
+                    Record the applicant's university entrance
+                    examination details.
+                </p>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        {{ form.entrance_exam_name.label_tag }}
+                        {{ form.entrance_exam_name }}
+                        {{ form.entrance_exam_name.errors }}
+                    </div>
+
+                    <div class="field">
+                        {{ form.entrance_exam_status.label_tag }}
+                        {{ form.entrance_exam_status }}
+                        {{ form.entrance_exam_status.errors }}
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- 7. WORK EXPERIENCE -->
+
+            <div class="section">
+
+                <h2>7. Work Experience</h2>
+
+                <div class="form-grid">
+
+                    {% for field in form %}
+                        {% if field.name == "work_experience_years" or field.name == "employment_category" %}
+
+                        <div class="field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+
+
+            <!-- 8. APPLICATION STATUS -->
+
+            <div class="section">
+
+                <h2>8. Application Status</h2>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        {{ form.application_status.label_tag }}
+                        {{ form.application_status }}
+                        {{ form.application_status.errors }}
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- FORM ACTIONS -->
+
+            <div class="actions">
+
+                <button type="submit">
+                    Save Applicant
+                </button>
+
+                <a href="{% url 'applicant_list' %}" class="cancel-btn">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

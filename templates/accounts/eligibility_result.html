@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Eligibility Evaluation | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #f8f5f6;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .header {
+            background: #891b43;
+            color: white;
+            padding: 25px 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px;
+        }
+
+        .header p {
+            margin: 5px 0;
+            color: #f4dce5;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #891b43;
+            font-size: 21px;
+            border-bottom: 2px solid #ead6dd;
+            padding-bottom: 12px;
+            margin-top: 0;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .detail {
+            background: #faf6f8;
+            padding: 16px;
+            border-radius: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .detail strong {
+            display: block;
+            color: #891b43;
+            margin-bottom: 8px;
+        }
+
+        .detail span {
+            font-size: 17px;
+        }
+
+        .result-banner {
+            padding: 22px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 6px solid #777;
+            background: #f4f4f4;
+        }
+
+        .result-banner.eligible {
+            background: #e9f8ef;
+            border-color: #16803c;
+        }
+
+        .result-banner.not-eligible {
+            background: #fff0f0;
+            border-color: #c62828;
+        }
+
+        .result-banner.pending {
+            background: #fff8e6;
+            border-color: #d18b00;
+        }
+
+        .result-banner.manual {
+            background: #fff5e9;
+            border-color: #d97706;
+        }
+
+        .result-banner h2 {
+            border: none;
+            margin: 0 0 10px;
+            padding: 0;
+        }
+
+        .result-banner p {
+            margin-bottom: 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .PASS, .ELIGIBLE {
+            background: #d8f3df;
+            color: #176b32;
+        }
+
+        .FAIL, .NOT_ELIGIBLE {
+            background: #ffe0e0;
+            color: #b42318;
+        }
+
+        .PENDING {
+            background: #fff0c2;
+            color: #8a5b00;
+        }
+
+        .MANUAL_REVIEW {
+            background: #ffead5;
+            color: #9a4d00;
+        }
+
+        .check-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 17px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .check-row:last-child {
+            border-bottom: none;
+        }
+
+        .check-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .check-message {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .reason {
+            padding: 13px;
+            background: #fff6f6;
+            border-left: 4px solid #891b43;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 22px;
+            border-radius: 6px;
+            background: #891b43;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #64132e;
+        }
+
+        .btn-secondary {
+            background: #eee7ea;
+            color: #333;
+        }
+
+        @media(max-width: 650px) {
+            body {
+                padding: 12px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .check-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>PhD Eligibility Evaluation</h1>
+        <p>PhD Cell Portal | The NorthCap University</p>
+        <p>Application ID: {{ applicant.application_id }}</p>
+        <p>Applicant: {{ applicant.full_name }}</p>
+    </div>
+
+    <!-- FINAL RESULT -->
+
+    <div class="card">
+
+        <h2>1. Final Eligibility Result</h2>
+
+        <div class="result-banner
+            {% if result.status == 'ELIGIBLE' %}eligible
+            {% elif result.status == 'NOT_ELIGIBLE' %}not-eligible
+            {% elif result.status == 'PENDING' %}pending
+            {% elif result.status == 'MANUAL_REVIEW' %}manual
+            {% endif %}">
+
+            <h2>{{ result.status|cut:"_" }}</h2>
+
+            {% if result.status == "ELIGIBLE" %}
+                <p>All configured academic eligibility checks have been satisfied.</p>
+
+            {% elif result.status == "NOT_ELIGIBLE" %}
+                <p>Applicant does not satisfy one or more configured eligibility criteria.</p>
+
+            {% elif result.status == "PENDING" %}
+                <p>Some required information is still pending.</p>
+
+            {% else %}
+                <p>Manual verification is required before reaching a final decision.</p>
+            {% endif %}
+
+        </div>
+
+        <div class="details-grid">
+
+            <div class="detail">
+                <strong>Applicant Name</strong>
+                <span>{{ applicant.full_name }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Application ID</strong>
+                <span>{{ applicant.application_id }}</span>
+            </div>
+
+            <div class="detail">
+                <strong>Obtained Percentage</strong>
+                <span>
+                    {% if result.obtained_percentage != None %}
+                        {{ result.obtained_percentage }}%
+                    {% else %}
+                        Not Available
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="detail">
+                <strong>Required Minimum Percentage</strong>
+                <span>
+                    {% if result.required_percentage != None %}
+                        {{ result.required_percentage }}%
+                    {% else %}
+                        Not Determined
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="detail">
+                <strong>Applicant Category</strong>
+                <span>
+                    {{ applicant.get_applicant_category_display|default:"Not Provided" }}
+                </span>
+            </div>
+
+            <div class="detail">
+                <strong>PG University</strong>
+                <span>{{ applicant.university_name|default:"Not Provided" }}</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ELIGIBILITY CHECKS -->
+
+    <div class="card">
+
+        <h2>2. Individual Eligibility Checks</h2>
+
+        {% for check in checks %}
+
+            <div class="check-row">
+
+                <div>
+                    <div class="check-name">
+                        {{ check.name }}
+                    </div>
+
+                    <div class="check-message">
+                        {{ check.message }}
+                    </div>
+                </div>
+
+                <span class="status {{ check.status }}">
+                    {{ check.status|cut:"_" }}
+                </span>
+
+            </div>
+
+        {% empty %}
+
+            <p>No eligibility checks available.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- REASONS -->
+
+    <div class="card">
+
+        <h2>3. Evaluation Remarks</h2>
+
+        {% for reason in reasons %}
+
+            <div class="reason">
+                {{ reason }}
+            </div>
+
+        {% empty %}
+
+            <p>No additional remarks.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- CATEGORY RULES -->
+
+    <div class="card">
+
+        <h2>4. Configured Academic Criteria</h2>
+
+        <div class="details-grid">
+
+            <div class="detail">
+                <strong>General Category</strong>
+                <span>Minimum 60%</span>
+            </div>
+
+            <div class="detail">
+                <strong>SC / ST / OBC / PwD</strong>
+                <span>Minimum 55%</span>
+            </div>
+
+        </div>
+
+        <p style="margin-top:18px;color:#777;font-size:13px;">
+            These are the academic percentage thresholds currently
+            configured in the portal.
+        </p>
+
+    </div>
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <a href="{% url 'applicant_detail' applicant.pk %}" class="btn">
+            Back to Applicant Details
+        </a>
+
+        <a href="{% url 'applicant_edit' applicant.pk %}" class="btn btn-secondary">
+            Edit Applicant
+        </a>
+
+        <a href="{% url 'applicant_list' %}" class="btn btn-secondary">
+            Back to Applicants
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

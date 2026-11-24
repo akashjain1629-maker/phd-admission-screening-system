@@ -1,0 +1,177 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | PhD Cell Portal</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+<div class="login-container">
+
+    <section class="welcome-section">
+
+        <div class="university-brand">
+            <div class="brand-mark">N</div>
+            <div>
+                <h3>THE NORTHCAP UNIVERSITY</h3>
+                <p>GURUGRAM</p>
+            </div>
+        </div>
+
+        <div class="welcome-content">
+            <span class="eyebrow">WELCOME TO</span>
+
+            <h1>PhD Application Portal</h1>
+
+            <p class="welcome-description">
+                Streamlining Research Admissions with
+                AI-Powered Document Verification
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <span>01</span>
+                    <p>Application Process</p>
+                </div>
+
+                <div class="feature">
+                    <span>02</span>
+                    <p>AI Verification</p>
+                </div>
+
+                <div class="feature">
+                    <span>03</span>
+                    <p>Efficient Shortlisting</p>
+                </div>
+            </div>
+
+            <div class="university-message">
+                Ideas today. Impact tomorrow.
+            </div>
+        </div>
+
+        <div class="campus-decoration">
+            THE NORTHCAP UNIVERSITY
+            <br>
+            POWERING TOMORROW
+        </div>
+
+    </section>
+
+    <section class="form-section">
+
+        <div class="login-card">
+
+            <div class="form-heading">
+                <span class="form-label">ADMINISTRATION</span>
+
+                <h2>Login to PhD Cell Portal</h2>
+
+                <p>
+                    Access the administrative dashboard
+                    to manage PhD applications.
+                </p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">
+                        Email / Employee ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your email or employee ID"
+                        value="{{ request.POST.username|default:'' }}"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword()"
+                        >Show</button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-option">
+                        <input
+                            type="checkbox"
+                            name="remember_me"
+                            value="1"
+                        >
+                        Remember me
+                    </label>
+
+                    <span class="forgot-text">
+                        Forgot password? Contact administrator.
+                    </span>
+                </div>
+
+                <button type="submit" class="login-button">
+                    Login <span>→</span>
+                </button>
+            </form>
+
+            <div class="security-note">
+                Authorized university administrators only.
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    © 2026 The NorthCap University, Gurugram.
+    All rights reserved.
+</footer>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    const button = document.querySelector(".toggle-password");
+
+    if (password.type === "password") {
+        password.type = "text";
+        button.innerText = "Hide";
+    } else {
+        password.type = "password";
+        button.innerText = "Show";
+    }
+}
+</script>
+
+</body>
+</html>

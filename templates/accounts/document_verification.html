@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Verification | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8f6f7;
+            color: #29232a;
+        }
+
+        .header {
+            background: white;
+            padding: 22px 35px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: #781b3c;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 30px auto;
+            padding: 0 25px;
+        }
+
+        .page-title {
+            color: #781b3c;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .applicant-info,
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .applicant-info h3,
+        .section h2 {
+            color: #781b3c;
+            margin-top: 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            border-top: 4px solid #781b3c;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card h2 {
+            color: #781b3c;
+            font-size: 28px;
+            margin: 10px 0 0;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 16px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 16px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+        }
+
+        .missing-box {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .missing-box h3 {
+            margin-top: 0;
+        }
+
+        .missing-box li {
+            margin: 10px 0;
+        }
+
+        .required-list {
+            line-height: 2;
+        }
+
+        .upload-button,
+        .save-button,
+        .back-button {
+            display: inline-block;
+            background: #781b3c;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .upload-button:hover,
+        .save-button:hover,
+        .back-button:hover {
+            background: #5d122d;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        th {
+            background: #f5e8ed;
+            color: #781b3c;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fff1c7;
+            color: #856404;
+        }
+
+        .verified {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .resubmission {
+            background: #ffe2cc;
+            color: #9a4311;
+        }
+
+        .manual-review {
+            background: #e8e2ff;
+            color: #50379a;
+        }
+
+        .document-link {
+            color: #781b3c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 65px;
+        }
+
+        .required-label {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .optional-label {
+            color: #777;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 30px;
+        }
+
+        /* OCR RESULTS */
+
+        .ocr-details {
+            margin-top: 14px;
+            min-width: 180px;
+        }
+
+        .ocr-details summary {
+            cursor: pointer;
+            color: #781b3c;
+            font-weight: bold;
+            padding: 10px;
+            background: #f8f0f3;
+            border-radius: 6px;
+        }
+
+        .ocr-panel {
+            margin-top: 10px;
+            padding: 16px;
+            background: #faf8f9;
+            border: 1px solid #eadde2;
+            border-radius: 8px;
+            min-width: 250px;
+            max-width: 450px;
+        }
+
+        .ocr-panel h4 {
+            color: #781b3c;
+            margin: 12px 0 8px;
+        }
+
+        .ocr-panel p {
+            margin: 7px 0;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+        }
+
+        .ocr-label {
+            font-weight: bold;
+            color: #51434a;
+        }
+
+        .ocr-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .ocr-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .ocr-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .ocr-other {
+            background: #fff1c7;
+            color: #856404;
+        }
+
+        .ocr-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .ocr-keyword {
+            background: #eee4e9;
+            color: #781b3c;
+            border-radius: 12px;
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+
+        .ocr-note {
+            color: #777;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        .ocr-data-list {
+            padding-left: 18px;
+            margin: 7px 0;
+        }
+
+        .ocr-data-list li {
+            margin: 5px 0;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 18px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h2>PhD Cell Portal</h2>
+
+    <a href="{% url 'applicant_list' %}" class="back-button">
+        Back to Applicants
+    </a>
+</header>
+
+<main class="container">
+
+    <h1 class="page-title">Document Verification</h1>
+
+    <p class="subtitle">
+        Review and verify applicant documents before eligibility evaluation.
+    </p>
+
+    <section class="applicant-info">
+
+        <h3>Applicant Information</h3>
+
+        <p>
+            <strong>Application ID:</strong>
+            {{ applicant.application_id }}
+        </p>
+
+        <p>
+            <strong>Name:</strong>
+            {{ applicant.full_name }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ applicant.email }}
+        </p>
+
+        <p>
+            <strong>Department:</strong>
+            {{ applicant.department }}
+        </p>
+
+    </section>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- DOCUMENT STATISTICS -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <p>Total Documents Uploaded</p>
+            <h2>{{ total_documents }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Verified Documents</p>
+            <h2>{{ verified_documents }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Pending Documents</p>
+            <h2>{{ pending_documents }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Rejected / Resubmission</p>
+            <h2>{{ rejected_documents }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Manual Review</p>
+            <h2>{{ manual_review_documents }}</h2>
+        </div>
+
+    </section>
+        <!-- MANDATORY DOCUMENT REQUIREMENTS -->
+
+    <section class="section">
+
+        <h2>Mandatory Document Requirements</h2>
+
+        {% if all_mandatory_verified %}
+
+            <div class="success">
+                All mandatory documents have been uploaded and verified.
+            </div>
+
+        {% else %}
+
+            <div class="warning">
+                Mandatory document verification is incomplete.
+                Complete the following requirements before proceeding.
+            </div>
+
+        {% endif %}
+
+        {% if missing_documents %}
+
+            <div class="missing-box">
+
+                <h3>Missing Mandatory Documents</h3>
+
+                <ul>
+                    {% for document in missing_documents %}
+                        <li>{{ document }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+        {% endif %}
+
+        {% if pending_required_documents %}
+
+            <div class="warning">
+
+                <strong>Mandatory documents awaiting verification:</strong>
+
+                <ul>
+                    {% for document in pending_required_documents %}
+                        <li>{{ document }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+        {% endif %}
+
+        {% if manual_review_required_documents %}
+
+            <div class="warning">
+
+                <strong>Mandatory documents requiring manual review:</strong>
+
+                <ul>
+                    {% for document in manual_review_required_documents %}
+                        <li>{{ document }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+        {% endif %}
+
+        {% if rejected_required_documents %}
+
+            <div class="missing-box">
+
+                <h3>Rejected Mandatory Documents</h3>
+
+                <ul>
+                    {% for document in rejected_required_documents %}
+                        <li>{{ document }}</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+
+        {% endif %}
+
+        <h3>Required Document List</h3>
+
+        <ul class="required-list">
+            <li><strong>Resume</strong> — Mandatory</li>
+            <li><strong>10th Marksheet</strong> — Mandatory</li>
+            <li><strong>12th Marksheet</strong> — Mandatory</li>
+            <li><strong>UG Marksheets</strong> — Mandatory</li>
+            <li><strong>Degree Certificate</strong> — Mandatory</li>
+            <li><strong>GATE Score Card</strong> — Mandatory</li>
+        </ul>
+
+        <a href="{% url 'applicant_document_upload' applicant.pk %}"
+           class="upload-button">
+            + Upload New Document
+        </a>
+
+    </section>
+
+    <!-- DOCUMENT CHECKLIST -->
+
+    <section class="section">
+
+        <h2>Document Checklist</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Document Type</th>
+                        <th>Mandatory</th>
+                        <th>Uploaded File</th>
+                        <th>Verification Status</th>
+                        <th>Remarks</th>
+                        <th>Update Verification</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for document in documents %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ document.get_document_type_display }}
+                            </strong>
+
+                            <!-- OCR RESULTS -->
+
+                            <details class="ocr-details">
+
+                                <summary>View OCR Results</summary>
+
+                                <div class="ocr-panel">
+
+                                    <h4>OCR Processing Status</h4>
+
+                                    {% if document.ocr_status == "COMPLETED" %}
+
+                                        <span class="ocr-badge ocr-completed">
+                                            Completed
+                                        </span>
+
+                                    {% elif document.ocr_status == "FAILED" %}
+
+                                        <span class="ocr-badge ocr-failed">
+                                            Failed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="ocr-badge ocr-other">
+                                            {{ document.ocr_status|default:"Pending" }}
+                                        </span>
+
+                                    {% endif %}
+
+                                    {% if document.extracted_data %}
+
+                                        {% with validation=document.extracted_data.document_validation %}
+
+                                            <h4>Document Classification</h4>
+
+                                            <p>
+                                                <span class="ocr-label">Assigned Type:</span>
+                                                {{ validation.assigned_type|default:document.document_type }}
+                                            </p>
+
+                                            <p>
+                                                <span class="ocr-label">Detected Type:</span>
+                                                {{ validation.detected_type|default:"Not available" }}
+                                            </p>
+
+                                            <p>
+                                                <span class="ocr-label">Confidence:</span>
+                                                {{ validation.confidence|default:"Not available" }}
+                                            </p>
+
+                                            <p>
+                                                <span class="ocr-label">Type Match:</span>
+
+                                                {% if validation.type_match == True %}
+
+                                                    <span class="ocr-badge ocr-completed">
+                                                        Yes
+                                                    </span>
+
+                                                {% elif validation.type_match == False %}
+
+                                                    <span class="ocr-badge ocr-failed">
+                                                        No
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="ocr-badge ocr-other">
+                                                        Manual Review
+                                                    </span>
+
+                                                {% endif %}
+                                            </p>
+
+                                            <p>
+                                                <span class="ocr-label">Validation Status:</span>
+                                                {{ validation.validation_status|default:"Not available" }}
+                                            </p>
+
+                                            {% if validation.message %}
+
+                                                <p>
+                                                    <span class="ocr-label">Message:</span>
+                                                    {{ validation.message }}
+                                                </p>
+
+                                            {% endif %}
+
+                                            {% if validation.matched_keywords %}
+
+                                                <h4>Matched Keywords</h4>
+
+                                                <div class="ocr-keywords">
+
+                                                    {% for keyword in validation.matched_keywords %}
+
+                                                        <span class="ocr-keyword">
+                                                            {{ keyword }}
+                                                        </span>
+
+                                                    {% endfor %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        {% endwith %}
+
+                                        <h4>Extracted Information</h4>
+
+                                        {% if document.extracted_data.university %}
+
+                                            <p>
+                                                <span class="ocr-label">University:</span>
+                                                {{ document.extracted_data.university }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.programme %}
+
+                                            <p>
+                                                <span class="ocr-label">Programme:</span>
+                                                {{ document.extracted_data.programme }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.cgpa %}
+
+                                            <p>
+                                                <span class="ocr-label">CGPA:</span>
+                                                {{ document.extracted_data.cgpa }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.aggregate_percentage %}
+
+                                            <p>
+                                                <span class="ocr-label">Aggregate Percentage:</span>
+                                                {{ document.extracted_data.aggregate_percentage }}%
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.gate_score %}
+
+                                            <p>
+                                                <span class="ocr-label">GATE Score:</span>
+                                                {{ document.extracted_data.gate_score }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.skills %}
+
+                                            <h4>Skills</h4>
+
+                                            <ul class="ocr-data-list">
+
+                                                {% for skill in document.extracted_data.skills %}
+                                                    <li>{{ skill }}</li>
+                                                {% endfor %}
+
+                                            </ul>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.education %}
+
+                                            <h4>Education</h4>
+
+                                            <ul class="ocr-data-list">
+
+                                                {% for item in document.extracted_data.education %}
+                                                    <li>{{ item }}</li>
+                                                {% endfor %}
+
+                                            </ul>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.experience %}
+
+                                            <h4>Experience</h4>
+
+                                            <ul class="ocr-data-list">
+
+                                                {% for item in document.extracted_data.experience %}
+                                                    <li>{{ item }}</li>
+                                                {% endfor %}
+
+                                            </ul>
+
+                                        {% endif %}
+
+                                        {% if document.extracted_data.projects %}
+
+                                            <h4>Projects</h4>
+
+                                            <ul class="ocr-data-list">
+
+                                                {% for item in document.extracted_data.projects %}
+                                                    <li>{{ item }}</li>
+                                                {% endfor %}
+
+                                            </ul>
+
+                                        {% endif %}
+
+                                    {% else %}
+
+                                        <p class="ocr-note">
+                                            No structured OCR information is available yet.
+                                        </p>
+
+                                    {% endif %}
+
+                                    {% if document.ocr_processed_at %}
+
+                                        <p class="ocr-note">
+                                            Last OCR Processed:
+                                            {{ document.ocr_processed_at|date:"d M Y, h:i A" }}
+                                        </p>
+
+                                    {% endif %}
+
+                                    <p class="ocr-note">
+                                        OCR classification does not establish document authenticity.
+                                        Final verification requires appropriate review.
+                                    </p>
+
+                                </div>
+
+                            </details>
+
+                        </td>
+
+                        <td>
+
+                            {% if document.is_mandatory %}
+
+                                <span class="required-label">Required</span>
+
+                            {% else %}
+
+                                <span class="optional-label">Optional</span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if document.document_file %}
+
+                                <a href="{{ document.document_file.url }}"
+                                   target="_blank"
+                                   class="document-link">
+                                    View Document ↗
+                                </a>
+
+                            {% else %}
+
+                                Not uploaded
+
+                            {% endif %}
+
+                        </td>
+                                                <td>
+
+                            {% if document.verification_status == "VERIFIED" %}
+
+                                <span class="status verified">
+                                    Verified
+                                </span>
+
+                            {% elif document.verification_status == "MANUAL_REVIEW" %}
+
+                                <span class="status manual-review">
+                                    Manual Review
+                                </span>
+
+                            {% elif document.verification_status == "REJECTED" %}
+
+                                <span class="status rejected">
+                                    Rejected
+                                </span>
+
+                            {% elif document.verification_status == "RESUBMISSION_REQUIRED" %}
+
+                                <span class="status resubmission">
+                                    Resubmission Required
+                                </span>
+
+                            {% else %}
+
+                                <span class="status pending">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if document.remarks %}
+                                {{ document.remarks }}
+                            {% else %}
+                                No remarks
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <form method="POST"
+                                  action="{% url 'update_document_verification' document.pk %}">
+
+                                {% csrf_token %}
+
+                                <select name="verification_status" required>
+
+                                    <option value="PENDING"
+                                        {% if document.verification_status == "PENDING" %}selected{% endif %}>
+                                        Pending
+                                    </option>
+
+                                    <option value="MANUAL_REVIEW"
+                                        {% if document.verification_status == "MANUAL_REVIEW" %}selected{% endif %}>
+                                        Manual Review
+                                    </option>
+
+                                    <option value="VERIFIED"
+                                        {% if document.verification_status == "VERIFIED" %}selected{% endif %}>
+                                        Verified
+                                    </option>
+
+                                    <option value="REJECTED"
+                                        {% if document.verification_status == "REJECTED" %}selected{% endif %}>
+                                        Rejected
+                                    </option>
+
+                                    <option value="RESUBMISSION_REQUIRED"
+                                        {% if document.verification_status == "RESUBMISSION_REQUIRED" %}selected{% endif %}>
+                                        Resubmission Required
+                                    </option>
+
+                                </select>
+
+                                <textarea
+                                    name="remarks"
+                                    placeholder="Enter verification remarks..."
+                                >{{ document.remarks }}</textarea>
+
+                                <button type="submit" class="save-button">
+                                    Save Status
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="6" class="empty">
+                            No documents uploaded yet.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

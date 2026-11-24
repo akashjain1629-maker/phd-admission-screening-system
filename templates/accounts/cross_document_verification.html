@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Document Verification | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f8f6f7;
+            color: #29232a;
+        }
+
+        .header {
+            background: white;
+            padding: 22px 35px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h2 {
+            color: #781b3c;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 30px auto;
+            padding: 0 25px;
+        }
+
+        .page-title {
+            color: #781b3c;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card h2, .card h3 {
+            color: #781b3c;
+            margin-top: 0;
+        }
+
+        .applicant-info p {
+            margin: 10px 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            border-top: 4px solid #781b3c;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card p {
+            color: #666;
+            margin: 0;
+        }
+
+        .stat-card h2 {
+            color: #781b3c;
+            font-size: 27px;
+            margin: 12px 0 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .MATCH {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .MISMATCH {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .MANUAL_REVIEW, .NOT_FOUND, .PROFILE_ONLY {
+            background: #fff1c7;
+            color: #856404;
+        }
+
+        .notice {
+            padding: 16px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .notice-info {
+            background: #e8f0fe;
+            color: #234b83;
+        }
+
+        .notice-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .notice-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .notice-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th {
+            background: #f5e8ed;
+            color: #781b3c;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .value-list {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .value-list li {
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .value-label {
+            font-weight: bold;
+            color: #51434a;
+        }
+
+        .message {
+            color: #666;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .warning-item {
+            background: #fff8e6;
+            border-left: 4px solid #d49b19;
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .button {
+            display: inline-block;
+            background: #781b3c;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #5d122d;
+        }
+
+        .secondary-button {
+            background: #555;
+        }
+
+        .secondary-button:hover {
+            background: #333;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 25px;
+        }
+
+        .history-status {
+            font-weight: bold;
+        }
+
+        .small-note {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 18px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h2>PhD Cell Portal</h2>
+
+    <a href="{% url 'applicant_detail' applicant.pk %}"
+       class="button secondary-button">
+        Back to Applicant
+    </a>
+</header>
+
+<main class="container">
+
+    <h1 class="page-title">Cross-Document Verification</h1>
+
+    <p class="subtitle">
+        Compare extracted information across applicant documents
+        and the applicant profile to identify matches, mismatches
+        and cases requiring manual review.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="notice notice-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- APPLICANT INFORMATION -->
+
+    <section class="card applicant-info">
+
+        <h2>Applicant Information</h2>
+
+        <p>
+            <strong>Application ID:</strong>
+            {{ applicant.application_id }}
+        </p>
+
+        <p>
+            <strong>Candidate Name:</strong>
+            {{ applicant.full_name }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ applicant.email }}
+        </p>
+
+        <p>
+            <strong>Department:</strong>
+            {{ applicant.department }}
+        </p>
+
+    </section>
+
+    <!-- PREVIEW STATUS -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <p>Overall Result</p>
+            <h2>
+                {{ preview.status|default:"N/A" }}
+            </h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Matched Fields</p>
+            <h2>{{ preview.matched_fields|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Mismatches</p>
+            <h2>{{ preview.mismatches|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Warnings</p>
+            <h2>{{ preview.warnings|length }}</h2>
+        </div>
+
+    </section>
+
+    <!-- IMPORTANT INFORMATION -->
+
+    <section class="card">
+
+        <h2>Verification Information</h2>
+
+        <div class="notice notice-info">
+            <strong>Read-only Preview:</strong>
+            This page compares OCR-extracted values with applicant
+            profile information. Previewing does not save a report
+            or change any document verification status.
+        </div>
+
+        <div class="notice notice-warning">
+            A matching OCR result does not establish the official
+            authenticity of a document. Manual review may still
+            be required.
+        </div>
+
+        <p class="small-note">
+            Documents considered:
+            {{ preview.documents_considered|length }}
+        </p>
+
+        <p class="small-note">
+            {{ preview.message }}
+        </p>
+
+    </section>
+
+    <!-- FIELD COMPARISON -->
+
+    <section class="card">
+
+        <h2>Field-wise Comparison Results</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Status</th>
+                        <th>Extracted / Profile Values</th>
+                        <th>Result Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for result in preview.comparison_results %}
+
+                        <tr>
+
+                            <td>
+                                <strong>{{ result.label }}</strong>
+                            </td>
+
+                            <td>
+                                <span class="status {{ result.status }}">
+                                    {{ result.status }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                {% if result.values %}
+
+                                    <ul class="value-list">
+
+                                        {% for item in result.values %}
+
+                                            <li>
+
+                                                <span class="value-label">
+                                                    {{ item.source }}
+                                                </span>
+
+                                                <br>
+
+                                                Value:
+                                                {{ item.raw_value }}
+
+                                                {% if item.document_id %}
+                                                    <br>
+                                                    Document ID:
+                                                    {{ item.document_id }}
+                                                {% endif %}
+
+                                                {% if item.document_type_conflict %}
+                                                    <br>
+                                                    <span class="status MANUAL_REVIEW">
+                                                        Document Type Conflict
+                                                    </span>
+                                                {% endif %}
+
+                                            </li>
+
+                                        {% endfor %}
+
+                                    </ul>
+
+                                {% else %}
+
+                                    <span class="small-note">
+                                        No usable values found.
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ result.message }}
+
+                                {% if result.warnings %}
+
+                                    {% for warning in result.warnings %}
+
+                                        <div class="warning-item">
+                                            {{ warning.message }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="4" class="empty">
+                                No comparison results available.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- MISMATCHES -->
+
+    <section class="card">
+
+        <h2>Mismatch Details</h2>
+
+        {% if preview.mismatches %}
+
+            <div class="notice notice-danger">
+                Different values were found. Please review
+                the following fields carefully.
+            </div>
+
+            {% for item in preview.mismatches %}
+
+                <div class="warning-item">
+
+                    <strong>{{ item.label }}</strong>
+
+                    <p>{{ item.message }}</p>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="notice notice-success">
+                No confirmed field mismatches were found in this preview.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- WARNINGS -->
+
+    <section class="card">
+
+        <h2>Warnings and Manual Review</h2>
+
+        {% if preview.warnings %}
+
+            {% for warning in preview.warnings %}
+
+                <div class="warning-item">
+
+                    {% if warning.field %}
+                        <strong>{{ warning.field }}</strong>
+                    {% endif %}
+
+                    <p>{{ warning.message }}</p>
+
+                    {% if warning.document_ids %}
+                        <p>
+                            Document IDs:
+                            {{ warning.document_ids|join:", " }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                No additional warnings were generated.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- DUPLICATE FILES -->
+
+    {% if preview.duplicate_file_groups %}
+
+        <section class="card">
+
+            <h2>Duplicate File Detection</h2>
+
+            <div class="notice notice-warning">
+                Identical file content was detected in multiple uploads.
+                Such files should not be treated as independent evidence.
+            </div>
+
+            {% for group in preview.duplicate_file_groups %}
+
+                <div class="warning-item">
+
+                    <strong>Duplicate File Group</strong>
+
+                    <p>
+                        Document IDs:
+                        {{ group.document_ids|join:", " }}
+                    </p>
+
+                    <p>
+                        Document Types:
+                        {{ group.document_types|join:", " }}
+                    </p>
+
+                    {% if group.document_type_conflict %}
+                        <span class="status MANUAL_REVIEW">
+                            Document Type Conflict
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </section>
+
+    {% endif %}
+
+    <!-- SAVE REPORT -->
+
+    <section class="card">
+
+        <h2>Save Verification Report</h2>
+
+        <p>
+            Once you have reviewed the preview, you can save
+            a new Cross-Document Verification report.
+        </p>
+
+        <div class="notice notice-warning">
+            Saving creates a separate verification history record.
+            It does not automatically mark uploaded documents as
+            VERIFIED or change their MANUAL_REVIEW status.
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button type="submit" class="button">
+                Save Cross-Document Verification Report
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- REPORT HISTORY -->
+
+    
+<section class="card">
+
+    <h2>Cross-Document Verification History</h2>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Report ID</th>
+                    <th>Date and Time</th>
+                    <th>Status</th>
+                    <th>Verified By</th>
+                    <th>Documents Considered</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for report in reports %}
+
+                    <tr>
+
+                        <td>#{{ report.id }}</td>
+
+                        <td>
+                            {{ report.created_at|date:"d M Y, h:i A" }}
+                        </td>
+
+                        <td>
+                            <span class="status {{ report.status }}">
+                                {{ report.get_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if report.verified_by %}
+                                {{ report.verified_by.username }}
+                            {% else %}
+                                Not available
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ report.documents_considered|length }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'cross_document_verification_report_detail' applicant.pk report.id %}"
+                               class="button secondary-button">
+                                View Report
+                            </a>
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="6" class="empty">
+                            No previous cross-document reports found.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+<div class="actions">
+
+    <a href="{% url 'document_verification' applicant.pk %}"
+       class="button secondary-button">
+        Back to Document Verification
+    </a>
+
+    <a href="{% url 'applicant_detail' applicant.pk %}"
+       class="button">
+        Back to Applicant Details
+    </a>
+
+</div>

@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Applicant Document | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: Arial, sans-serif;
+            background: #f8f6f7;
+            color: #29232a;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 30px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #781b3c;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .applicant-info {
+            background: #f7e9ee;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .help {
+            color: #777;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .error {
+            color: #c62828;
+            margin-top: 8px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 13px 24px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 6px;
+            background: #781b3c;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background: #5d122d;
+        }
+
+        .back {
+            margin-left: 10px;
+            color: #781b3c;
+            text-decoration: none;
+        }
+
+        .messages {
+            padding: 12px;
+            background: #e8f5e9;
+            color: #256029;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Upload Applicant Document</h1>
+
+    <p class="subtitle">
+        Upload the required academic and supporting documents.
+    </p>
+
+    <div class="applicant-info">
+        <strong>Applicant:</strong> {{ applicant.full_name }}<br>
+        <strong>Application ID:</strong> {{ applicant.application_id }}
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="messages">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <label for="{{ form.document_type.id_for_label }}">
+            Select Document Type
+        </label>
+
+        {{ form.document_type }}
+
+        {% if form.document_type.errors %}
+            <div class="error">
+                {{ form.document_type.errors }}
+            </div>
+        {% endif %}
+
+        <label for="{{ form.document_file.id_for_label }}">
+            Select Document File
+        </label>
+
+        {{ form.document_file }}
+
+        <p class="help">
+            Allowed formats: PDF, JPG, JPEG, PNG.
+            Maximum file size: 10 MB.
+        </p>
+
+        {% if form.document_file.errors %}
+            <div class="error">
+                {{ form.document_file.errors }}
+            </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="button">
+            Upload Document
+        </button>
+
+        <a href="{% url 'document_verification' applicant.pk %}"
+           class="back">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

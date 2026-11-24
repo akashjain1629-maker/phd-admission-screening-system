@@ -1,0 +1,709 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Report Details | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            color: #263238;
+        }
+
+        .header {
+            background: white;
+            padding: 22px 35px;
+            border-bottom: 1px solid #e5e9f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .header h2 {
+            color: #174a7e;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: 30px auto;
+            padding: 0 25px;
+        }
+
+        .page-title {
+            color: #174a7e;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            color: #174a7e;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .info-item {
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #536273;
+            margin-bottom: 7px;
+            font-size: 13px;
+        }
+
+        .info-item span {
+            font-weight: 600;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            border-top: 4px solid #2463a0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card p {
+            color: #667085;
+            margin: 0;
+        }
+
+        .stat-card h2 {
+            color: #174a7e;
+            font-size: 27px;
+            margin: 12px 0 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .MATCH {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .MISMATCH {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .MANUAL_REVIEW,
+        .NOT_FOUND,
+        .PROFILE_ONLY {
+            background: #fff1c7;
+            color: #856404;
+        }
+
+        .notice {
+            padding: 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .notice-info {
+            background: #e8f0fe;
+            color: #234b83;
+        }
+
+        .notice-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .notice-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .notice-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th {
+            background: #eaf1f8;
+            color: #174a7e;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .value-list {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .value-list li {
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .value-label {
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .warning-item {
+            background: #fff8e6;
+            border-left: 4px solid #d49b19;
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 25px;
+        }
+
+        .small-note {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: inline-block;
+            background: #174a7e;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #10365d;
+        }
+
+        .secondary-button {
+            background: #555;
+        }
+
+        .secondary-button:hover {
+            background: #333;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .stats,
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 18px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h2>PhD Cell Portal</h2>
+
+    <a href="{% url 'cross_document_verification' applicant.pk %}"
+       class="button secondary-button">
+        Back to Verification History
+    </a>
+</header>
+
+<main class="container">
+
+    <h1 class="page-title">Cross-Document Verification Report</h1>
+
+    <p class="subtitle">
+        Detailed view of the saved cross-document verification report.
+        This report is stored as a historical record.
+    </p>
+
+    <!-- REPORT INFORMATION -->
+
+    <section class="card">
+        <h2>Report Information</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <strong>Report ID</strong>
+                <span>#{{ report.id }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Date and Time</strong>
+                <span>{{ report.created_at|date:"d M Y, h:i A" }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Verification Status</strong>
+                <span class="status {{ report.status }}">
+                    {{ report.get_status_display }}
+                </span>
+            </div>
+
+            <div class="info-item">
+                <strong>Verified By</strong>
+                <span>
+                    {% if report.verified_by %}
+                        {{ report.verified_by.username }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- APPLICANT INFORMATION -->
+
+    <section class="card">
+        <h2>Applicant Information</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <strong>Application ID</strong>
+                <span>{{ applicant.application_id }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Candidate Name</strong>
+                <span>{{ applicant.full_name }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Email</strong>
+                <span>{{ applicant.email }}</span>
+            </div>
+
+            <div class="info-item">
+                <strong>Department</strong>
+                <span>{{ applicant.department }}</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- REPORT STATISTICS -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <p>Matched Fields</p>
+            <h2>{{ report.matched_fields|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Mismatches</p>
+            <h2>{{ report.mismatches|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Warnings</p>
+            <h2>{{ report.warnings|length }}</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Documents Considered</p>
+            <h2>{{ report.documents_considered|length }}</h2>
+        </div>
+
+    </section>
+
+    <!-- IMPORTANT NOTICE -->
+
+    <section class="card">
+
+        <h2>Verification Notice</h2>
+
+        <div class="notice notice-info">
+            This page displays the saved verification report.
+            It does not run OCR again or modify the applicant's documents.
+        </div>
+
+        <div class="notice notice-warning">
+            A matching OCR result does not establish the official
+            authenticity of a document. Manual review may still be required.
+        </div>
+
+    </section>
+
+    <!-- FIELD COMPARISON RESULTS -->
+
+    <section class="card">
+
+        <h2>Field-wise Comparison Results</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Status</th>
+                        <th>Extracted / Profile Values</th>
+                        <th>Result Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for result in report.comparison_results %}
+
+                        <tr>
+
+                            <td>
+                                <strong>{{ result.label }}</strong>
+                            </td>
+
+                            <td>
+                                <span class="status {{ result.status }}">
+                                    {{ result.status }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                {% if result.values %}
+
+                                    <ul class="value-list">
+
+                                        {% for item in result.values %}
+                                            <li>
+
+                                                <span class="value-label">
+                                                    {{ item.source }}
+                                                </span>
+
+                                                <br>
+
+                                                Value: {{ item.raw_value }}
+
+                                                {% if item.document_id %}
+                                                    <br>
+                                                    Document ID: {{ item.document_id }}
+                                                {% endif %}
+
+                                            </li>
+                                        {% endfor %}
+
+                                    </ul>
+
+                                {% else %}
+
+                                    <span class="small-note">
+                                        No usable values found.
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ result.message }}
+
+                                {% if result.warnings %}
+                                    {% for warning in result.warnings %}
+                                        <div class="warning-item">
+                                            {{ warning.message }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="4" class="empty">
+                                No comparison results available.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- MATCHED FIELDS -->
+
+    <section class="card">
+
+        <h2>Matched Fields</h2>
+
+        {% if report.matched_fields %}
+
+            <div class="notice notice-success">
+                The following fields were recorded as matched.
+            </div>
+
+            <ul class="value-list">
+                {% for item in report.matched_fields %}
+                    <li>
+                        {% if item.label %}
+                            <strong>{{ item.label }}</strong>
+                        {% else %}
+                            {{ item }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+
+            <p class="empty">No matched fields were recorded.</p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- MISMATCH DETAILS -->
+
+    <section class="card">
+
+        <h2>Mismatch Details</h2>
+
+        {% if report.mismatches %}
+
+            <div class="notice notice-danger">
+                Different values were recorded in this report.
+                Please review them carefully.
+            </div>
+
+            {% for item in report.mismatches %}
+
+                <div class="warning-item">
+
+                    {% if item.label %}
+                        <strong>{{ item.label }}</strong>
+                    {% endif %}
+
+                    <p>
+                        {{ item.message|default:item }}
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="notice notice-success">
+                No confirmed field mismatches were recorded.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- WARNINGS -->
+
+    <section class="card">
+
+        <h2>Warnings and Manual Review</h2>
+
+        {% if report.warnings %}
+
+            {% for warning in report.warnings %}
+
+                <div class="warning-item">
+
+                    {% if warning.field %}
+                        <strong>{{ warning.field }}</strong>
+                    {% endif %}
+
+                    <p>
+                        {{ warning.message|default:warning }}
+                    </p>
+
+                    {% if warning.document_ids %}
+                        <p>
+                            Document IDs:
+                            {{ warning.document_ids|join:", " }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                No additional warnings were recorded.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- DOCUMENTS CONSIDERED -->
+
+    <section class="card">
+
+        <h2>Documents Considered</h2>
+
+        {% if documents_considered_details %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Document Details</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for document in documents_considered_details %}
+
+                            <tr>
+                                <td>
+                                 <strong>{{ document.name }}</strong>
+                                  <br>
+                                 <span class="small-note">
+                                    Document ID: {{ document.id }}
+                                    </span>
+                                    <br>
+                                  <span class="small-note">
+                                   File: {{ document.file_name }}
+                                 </span>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty">
+                No document information was recorded.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <a href="{% url 'cross_document_verification' applicant.pk %}"
+           class="button">
+            Back to Verification History
+        </a>
+
+        <a href="{% url 'applicant_detail' applicant.pk %}"
+           class="button secondary-button">
+            Back to Applicant Details
+        </a>
+
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Applicant Details | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f5f6;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1, h2 {
+            color: #891b43;
+        }
+
+        h1 {
+            font-size: 30px;
+        }
+
+        .applicant-name {
+            font-size: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 22px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            font-size: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ead6dd;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .item {
+            padding: 16px;
+            background: #faf6f8;
+            border-radius: 7px;
+            min-height: 75px;
+            overflow-wrap: anywhere;
+        }
+
+        .item strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #891b43;
+        }
+
+        .value {
+            font-size: 16px;
+        }
+
+        .info-box {
+            padding: 15px;
+            background: #fff7f8;
+            border-left: 4px solid #891b43;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #891b43;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #64132e;
+        }
+
+        .btn-secondary {
+            background: #eee7ea;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #ddd1d7;
+        }
+
+        .btn-evaluation {
+            background: #198754;
+        }
+
+        .btn-evaluation:hover {
+            background: #146c43;
+        }
+
+        .btn-history {
+            background: #405c91;
+        }
+
+        .btn-history:hover {
+            background: #30466f;
+        }
+
+        .btn-cross {
+            background: #6f42a5;
+        }
+
+        .btn-cross:hover {
+            background: #563383;
+        }
+
+        @media(max-width: 650px) {
+            body {
+                padding: 12px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 17px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Applicant Details</h1>
+
+    <div class="applicant-name">
+        {{ applicant.full_name }}
+    </div>
+
+    <!-- 1. PERSONAL INFORMATION -->
+
+    <div class="section">
+
+        <h2>1. Personal Information</h2>
+
+        <div class="details">
+
+            <div class="item">
+                <strong>Application ID</strong>
+                <div class="value">
+                    {{ applicant.application_id|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Full Name</strong>
+                <div class="value">
+                    {{ applicant.full_name|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Email</strong>
+                <div class="value">
+                    {{ applicant.email|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Mobile Number</strong>
+                <div class="value">
+                    {{ applicant.mobile_number|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Date of Birth</strong>
+                <div class="value">
+                    {{ applicant.date_of_birth|default:"Not provided" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 2. PROGRAMME INFORMATION -->
+
+    <div class="section">
+
+        <h2>2. Programme Information</h2>
+
+        <div class="details">
+
+            <div class="item">
+                <strong>Department</strong>
+                <div class="value">
+                    {{ applicant.department|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Programme</strong>
+                <div class="value">
+                    {{ applicant.programme|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Research Area</strong>
+                <div class="value">
+                    {{ applicant.research_area|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Applied PhD Discipline</strong>
+                <div class="value">
+                    {{ applicant.applied_phd_discipline|default:"Not provided" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3. ACADEMIC QUALIFICATIONS -->
+
+    <div class="section">
+
+        <h2>3. Academic Qualifications</h2>
+
+        <div class="details">
+
+            <div class="item">
+                <strong>Highest Qualification</strong>
+                <div class="value">
+                    {{ applicant.highest_qualification|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Degree Name</strong>
+                <div class="value">
+                    {{ applicant.degree_name|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>University Name</strong>
+                <div class="value">
+                    {{ applicant.university_name|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Specialization</strong>
+                <div class="value">
+                    {{ applicant.specialization|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Aggregate Percentage</strong>
+                <div class="value">
+                    {% if applicant.aggregate_percentage != None %}
+                        {{ applicant.aggregate_percentage }}%
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>CGPA</strong>
+                <div class="value">
+                    {% if applicant.cgpa != None %}
+                        {{ applicant.cgpa }}
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Qualifying Degree Duration</strong>
+                <div class="value">
+                    {% if applicant.qualifying_degree_duration %}
+                        {{ applicant.qualifying_degree_duration }} years
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Degree Award Date</strong>
+                <div class="value">
+                    {{ applicant.degree_award_date|default:"Not provided" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 4. ELIGIBILITY INFORMATION -->
+
+    <div class="section">
+
+        <h2>4. PhD Eligibility Information</h2>
+
+        <div class="info-box">
+
+            Category-wise academic percentage criteria configured
+            in the portal:
+
+            <br>
+
+            <strong>General:</strong> 60%
+
+            <br>
+
+            <strong>SC / ST / OBC / PwD:</strong> 55%
+
+        </div>
+
+        <div class="details">
+
+            <div class="item">
+                <strong>Applicant Category</strong>
+                <div class="value">
+                    {{ applicant.get_applicant_category_display|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Required Minimum Percentage</strong>
+                <div class="value">
+
+                    {% if applicant.applicant_category == "GENERAL" %}
+                        60%
+
+                    {% elif applicant.applicant_category == "SC" or applicant.applicant_category == "ST" or applicant.applicant_category == "OBC" or applicant.applicant_category == "PWD" %}
+                        55%
+
+                    {% else %}
+                        Not determined
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>PG University Recognition</strong>
+                <div class="value">
+
+                    {% if applicant.pg_university_recognized == True %}
+                        Yes - Recognised
+
+                    {% elif applicant.pg_university_recognized == False %}
+                        No - Not Recognised
+
+                    {% else %}
+                        Not Verified
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Entrance Examination Name</strong>
+                <div class="value">
+                    {{ applicant.entrance_exam_name|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Entrance Examination Status</strong>
+                <div class="value">
+                    {{ applicant.get_entrance_exam_status_display|default:"Not provided" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 5. WORK EXPERIENCE -->
+
+    <div class="section">
+
+        <h2>5. Work Experience</h2>
+
+        <div class="details">
+
+            <div class="item">
+                <strong>Work Experience</strong>
+                <div class="value">
+                    {% if applicant.work_experience_years != None %}
+                        {{ applicant.work_experience_years }} years
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Employment Category</strong>
+                <div class="value">
+                    {{ applicant.get_employment_category_display|default:"Not provided" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 6. APPLICATION INFORMATION -->
+
+    <div class="section">
+
+        <h2>6. Application Information</h2>
+
+        <div class="details">
+
+            <div class="item">
+                <strong>Application Status</strong>
+                <div class="value">
+                    {{ applicant.get_application_status_display|default:"Not provided" }}
+                </div>
+            </div>
+
+            <div class="item">
+                <strong>Application Date</strong>
+                <div class="value">
+                    {{ applicant.application_date|default:"Not provided" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="actions">
+
+        <a href="{% url 'applicant_list' %}" class="btn">
+            Back to Applicants
+        </a>
+
+        <a href="{% url 'applicant_edit' applicant.pk %}" class="btn">
+            Edit Applicant
+        </a>
+
+        <a href="{% url 'document_verification' applicant.pk %}" class="btn">
+            Document Verification
+        </a>
+
+        <a href="{% url 'eligibility_evaluation' applicant.pk %}"
+           class="btn btn-evaluation">
+            Run Eligibility Evaluation
+        </a>
+
+        <a href="{% url 'eligibility_history' applicant.pk %}"
+           class="btn btn-history">
+            Eligibility History
+        </a>
+
+        <!-- CROSS-DOCUMENT VERIFICATION -->
+
+        <a href="{% url 'cross_document_verification' applicant.pk %}"
+           class="btn btn-cross">
+            Cross-Document Verification
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

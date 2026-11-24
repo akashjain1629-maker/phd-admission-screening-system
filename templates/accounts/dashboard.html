@@ -1,0 +1,146 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | PhD Cell Portal</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">N</div>
+
+            <div>
+                <h3>PhD Cell Portal</h3>
+                <small>THE NORTHCAP UNIVERSITY</small>
+            </div>
+        </div>
+
+        <nav>
+
+            <a class="active" href="{% url 'dashboard' %}">
+                ▦ Dashboard
+            </a>
+
+            <a href="{% url 'applicant_list' %}">
+                ♙ Applicants
+            </a>
+
+            <a href="{% url 'all_document_verification' %}">
+                ▣ Document Verification
+            </a>
+
+            <a href="{% url 'applicant_list' %}">
+                ◉ Eligibility Evaluation
+            </a>
+
+            <a href="#">
+                ✦ AI Review
+            </a>
+
+            <a href="#">
+                ♢ Final Decision
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            Ideas today. Impact tomorrow.
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <h3>PhD Administration</h3>
+
+            <div class="admin-info">
+
+                <span>{{ request.user.username }}</span>
+
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+
+            </div>
+
+        </header>
+
+
+        <section class="dashboard-content">
+
+            <p class="eyebrow">ADMIN DASHBOARD</p>
+
+            <h1>Welcome, Admin!</h1>
+
+            <p class="subtitle">
+                Overview of PhD applications and admission activities.
+            </p>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span>Total Applications</span>
+                    <h2>{{ total_applicants }}</h2>
+                    <small>Total registered applicants</small>
+                </div>
+
+
+                <div class="stat-card">
+                    <span>Submitted Applications</span>
+                    <h2>{{ submitted_applicants }}</h2>
+                    <small>Applications submitted</small>
+                </div>
+
+
+                <div class="stat-card">
+                    <span>Under Verification</span>
+                    <h2>{{ under_review_applicants }}</h2>
+                    <small>Applications under review</small>
+                </div>
+
+
+                <div class="stat-card">
+                    <span>Eligible Candidates</span>
+                    <h2>{{ eligible_applicants }}</h2>
+                    <small>Eligibility status approved</small>
+                </div>
+
+            </div>
+
+
+            <div class="welcome-card">
+
+                <h2>PhD Admission Management</h2>
+
+                <p>
+                    Manage applications, verify candidate documents,
+                    evaluate eligibility and review AI-based
+                    candidate recommendations.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

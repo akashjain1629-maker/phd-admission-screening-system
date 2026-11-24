@@ -1,0 +1,274 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document Verification | PhD Cell Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 22px;
+            font-family: Arial, sans-serif;
+            background: #f8f5f6;
+            color: #25212a;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1, h2 {
+            color: #901b48;
+        }
+
+        .header-links a {
+            color: #901b48;
+            text-decoration: none;
+            margin-left: 18px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .search-box, .table-container {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        }
+
+        .search-box form {
+            display: flex;
+            gap: 12px;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 12px 22px;
+            background: #901b48;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #741538;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        th {
+            background: #f8eff2;
+            color: #901b48;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr:hover {
+            background: #fcf8fa;
+        }
+
+        .count {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .verified {
+            color: #16803c;
+        }
+
+        .pending {
+            color: #b77900;
+        }
+
+        .manual-review {
+            color: #6842a6;
+        }
+
+        .rejected {
+            color: #d12e3e;
+        }
+
+        .view-link {
+            color: #901b48;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        @media (max-width: 850px) {
+            body {
+                padding: 12px;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .search-box form {
+                flex-direction: column;
+            }
+
+            .header-links a {
+                margin-left: 0;
+                margin-right: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>PhD Cell Portal</h1>
+
+    <div class="header-links">
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'applicant_list' %}">Applicants</a>
+    </div>
+</header>
+
+<main>
+
+    <h1>Global Document Verification</h1>
+
+    <p class="subtitle">
+        View applicants and review their uploaded document verification status.
+    </p>
+
+    <section class="search-box">
+
+        <form method="GET">
+            <input
+                type="text"
+                name="search"
+                placeholder="Search by name, email or application ID"
+                value="{{ search_query }}"
+            >
+
+            <button type="submit">Search</button>
+        </form>
+
+    </section>
+
+    <section class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Applicant Name</th>
+                    <th>Total Documents</th>
+                    <th>Verified</th>
+                    <th>Pending</th>
+                    <th>Manual Review</th>
+                    <th>Rejected / Resubmission</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in applicant_data %}
+
+                <tr>
+                    <td>{{ item.applicant.application_id }}</td>
+
+                    <td>{{ item.applicant.full_name }}</td>
+
+                    <td class="count">
+                        {{ item.total_documents }}
+                    </td>
+
+                    <td class="count verified">
+                        {{ item.verified_documents }}
+                    </td>
+
+                    <td class="count pending">
+                        {{ item.pending_documents }}
+                    </td>
+
+                    <td class="count manual-review">
+                        {{ item.manual_review_documents }}
+                    </td>
+
+                    <td class="count rejected">
+                        {{ item.rejected_documents }}
+                    </td>
+
+                    <td>
+                        <a
+                            class="view-link"
+                            href="{% url 'document_verification' item.applicant.pk %}"
+                        >
+                            View Documents
+                        </a>
+                    </td>
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="8" class="empty">
+                        No applicants found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+</body>
+</html>

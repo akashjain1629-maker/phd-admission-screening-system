@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicants | PhD Cell Portal</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f6f6;
+            color: #292929;
+        }
+
+        header {
+            background: white;
+            padding: 22px 35px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            color: #891b43;
+        }
+
+        .container {
+            padding: 35px;
+        }
+
+        .heading {
+            margin-bottom: 25px;
+        }
+
+        .heading h1 {
+            color: #891b43;
+            margin-bottom: 10px;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button, .add-btn {
+            background: #891b43;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .add-btn {
+            display: inline-block;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            color: #891b43;
+            background: #faf4f6;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 15px;
+            background: #f5e5eb;
+            color: #891b43;
+            font-size: 12px;
+        }
+
+        .action {
+            color: #891b43;
+            text-decoration: none;
+            margin-right: 8px;
+        }
+
+        .message {
+            padding: 12px;
+            background: #e6f5e9;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>PhD Cell Portal</h2>
+    <div>
+        <a href="{% url 'dashboard' %}" class="action">Dashboard</a>
+        <form method="POST" action="{% url 'logout' %}" style="display:inline">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="heading">
+        <h1>Applicants</h1>
+        <p>Manage and review PhD admission applications.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="GET" class="toolbar">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by name, email or application ID"
+            value="{{ search_query }}"
+        >
+
+        <select name="status">
+            <option value="">All Statuses</option>
+
+            {% for value, label in status_choices %}
+                <option value="{{ value }}"
+                    {% if selected_status == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Search</button>
+
+        <a href="{% url 'applicant_list' %}" class="add-btn">
+            Reset
+        </a>
+
+        <a href="{% url 'applicant_create' %}" class="add-btn">
+            + Add Applicant
+        </a>
+
+    </form>
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Programme</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for applicant in applicants %}
+
+                <tr>
+                    <td>{{ applicant.application_id }}</td>
+                    <td>{{ applicant.full_name }}</td>
+                    <td>{{ applicant.email }}</td>
+                    <td>{{ applicant.department }}</td>
+                    <td>{{ applicant.programme }}</td>
+
+                    <td>
+                        <span class="status">
+                            {{ applicant.get_application_status_display }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <a class="action"
+                           href="{% url 'applicant_detail' applicant.pk %}">
+                            View
+                        </a>
+
+                        <a class="action"
+                           href="{% url 'applicant_edit' applicant.pk %}">
+                            Edit
+                        </a>
+
+                        <form method="POST"
+                              action="{% url 'applicant_delete' applicant.pk %}"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this applicant?');">
+
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                    style="background:#b42335;padding:7px 10px;">
+                                Delete
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="7" class="empty">
+                        No applicants found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
